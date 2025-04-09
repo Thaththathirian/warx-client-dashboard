@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -379,6 +380,19 @@ const Users = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={addForm.control}
+                name="profile"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Profile URL (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/profile.jpg" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <DialogFooter>
                 <Button type="submit" disabled={addForm.formState.isSubmitting}>
                   {addForm.formState.isSubmitting && (
@@ -434,6 +448,19 @@ const Users = () => {
                     <FormLabel>Phone (Optional)</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="profile"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Profile URL (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/profile.jpg" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
