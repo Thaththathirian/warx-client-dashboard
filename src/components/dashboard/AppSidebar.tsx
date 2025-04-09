@@ -4,7 +4,7 @@ import { useSidebar } from '@/hooks/use-sidebar';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { FiUsers, FiLogOut, FiGrid, FiShield, FiChevronLeft, FiChevronRight, FiFileText } from 'react-icons/fi';
+import { FiUsers, FiLogOut, FiGrid, FiShield, FiChevronLeft, FiChevronRight, FiFileText, FiImage } from 'react-icons/fi';
 
 export function AppSidebar() {
   const { user, logout } = useAuthStore();
@@ -16,6 +16,7 @@ export function AppSidebar() {
     { name: 'Dashboard', icon: <FiGrid className="h-5 w-5" />, path: '/dashboard' },
     { name: 'Users', icon: <FiUsers className="h-5 w-5" />, path: '/users' },
     { name: 'Reports', icon: <FiFileText className="h-5 w-5" />, path: '/reports' },
+    { name: 'Assets', icon: <FiImage className="h-5 w-5" />, path: '/assets' },
     { name: 'Content Protection', icon: <FiShield className="h-5 w-5" />, path: '/protection' },
   ];
 

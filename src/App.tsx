@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Reports from "./pages/Reports";
+import Assets from "./pages/Assets";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider } from "@/hooks/use-sidebar";
 
@@ -28,6 +29,7 @@ const App = () => (
               <Route path="/dashboard/:page" element={<Dashboard />} />
               <Route path="/users" element={<Users />} />
               <Route path="/reports" element={<Reports />} />
+              <Route path="/assets" element={<Assets />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
