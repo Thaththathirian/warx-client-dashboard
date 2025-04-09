@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 
@@ -28,7 +29,7 @@ const Users = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <div>Loading users...</div>
+        <div className="container mx-auto p-4">Loading users...</div>
       </DashboardLayout>
     );
   }
@@ -36,19 +37,20 @@ const Users = () => {
   if (error) {
     return (
       <DashboardLayout>
-        <div>Error: {error}</div>
+        <div className="container mx-auto p-4">Error: {error}</div>
       </DashboardLayout>
     );
   }
 
   return (
     <DashboardLayout>
-      <div>
-        <h1>Users</h1>
-        <ul>
+      <div className="container mx-auto p-4">
+        <h1 className="text-2xl font-bold mb-4">Users</h1>
+        <ul className="space-y-2">
           {users.map(user => (
-            <li key={user.id}>
-              {user.name} ({user.email})
+            <li key={user.id} className="p-3 border rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
+              <p className="font-medium">{user.name}</p>
+              <p className="text-sm text-gray-500">{user.email}</p>
             </li>
           ))}
         </ul>

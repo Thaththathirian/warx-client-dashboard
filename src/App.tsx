@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/hooks/use-sidebar";
 
 const queryClient = new QueryClient();
 
