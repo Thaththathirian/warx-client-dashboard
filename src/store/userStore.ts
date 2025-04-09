@@ -26,7 +26,8 @@ interface UsersState {
   currentPage: number;
   totalPages: number;
   limit: number;
-  getEmployees: () => Promise<void>;
+  searchQuery: string;
+  getEmployees: (page?: number, limit?: number, search?: string) => Promise<void>;
   getEmployee: (id: number) => Promise<void>;
   addEmployee: (employee: {
     name: string;
@@ -46,6 +47,9 @@ interface UsersState {
     }
   ) => Promise<void>;
   deactivateEmployee: (id: number) => Promise<void>;
+  setSearchQuery: (query: string) => void;
+  setLimit: (limit: number) => void;
+  setCurrentPage: (page: number) => void;
 }
 
 const API_BASE_URL = 'https://antipiracy.whyxpose.com/api';
@@ -60,11 +64,33 @@ export const useUsersStore = create<UsersState>()(
     currentPage: 1,
     totalPages: 1,
     limit: 10,
+    searchQuery: '',
 
-    getEmployees: async () => {
+    setSearchQuery: (query: string) => {
+      set({ searchQuery: query });
+      get().getEmployees(1, get().limit, query);
+    },
+
+    setLimit: (limit: number) => {
+      set({ limit });
+      get().getEmployees(1, limit, get().searchQuery);
+    },
+
+    setCurrentPage: (page: number) => {
+      set({ currentPage: page });
+      get().getEmployees(page, get().limit, get().searchQuery);
+    },
+
+    getEmployees: async (page = 1, limit = 10, search = '') => {
       set({ isLoading: true, error: null });
       try {
-        const response = await axios.get(`${API_BASE_URL}/company/get_employees`, {
+        // Construct the URL with query parameters
+        let url = `${API_BASE_URL}/company/get_employees?page=${page}&limit=${limit}`;
+        if (search) {
+          url += `&search=${encodeURIComponent(search)}`;
+        }
+
+        const response = await axios.get(url, {
           withCredentials: true
         });
         
