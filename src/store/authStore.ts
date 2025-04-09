@@ -21,7 +21,6 @@ interface AuthState {
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  fetchAuthStatus: () => Promise<void>; // Added this method
 }
 
 const API_BASE_URL = 'https://antipiracy.whyxpose.com/api';
@@ -66,32 +65,6 @@ export const useAuthStore = create<AuthState>()(
         logout: () => {
           set({ user: null, isAuthenticated: false });
           toast.info('Logged out successfully');
-        },
-        fetchAuthStatus: async () => {
-          try {
-            // Check if there's an active session using a dedicated endpoint or the user profile endpoint
-            const response = await axios.get(`${API_BASE_URL}/auth/check_session`, {
-              withCredentials: true
-            });
-            
-            if (response.status === 200 && response.data.user) {
-              set({ 
-                user: response.data.user,
-                isAuthenticated: true
-              });
-            } else {
-              set({ 
-                user: null,
-                isAuthenticated: false
-              });
-            }
-          } catch (error) {
-            // If request fails, user is not authenticated
-            set({ 
-              user: null, 
-              isAuthenticated: false 
-            });
-          }
         }
       }),
       {

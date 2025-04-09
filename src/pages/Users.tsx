@@ -1,85 +1,110 @@
-import { useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useUsersStore } from '@/store/userStore'; // Fixed import
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { toast } from 'sonner';
-import { FiTrash, FiEdit, FiPlus } from 'react-icons/fi';
+import { useProtectedRoute } from '@/hooks/useProtectedRoute';
+import { useUsersStore } from '@/store/userStore';
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import DashboardLayout from '@/components/layout/DashboardLayout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Check, Edit, EyeOff, Loader2, Search, UserPlus, X } from "lucide-react";
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import Navbar from '@/components/dashboard/Navbar';
+import Sidebar from '@/components/dashboard/Sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { toast } from 'sonner';
 
-// Form validation schemas
+// Form schemas
 const addEmployeeSchema = z.object({
-  name: z.string().min(2, "Name is required"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  profile: z.string().optional(),
   phone: z.string().optional(),
+  profile: z.string().url("Invalid URL").optional(),
 });
 
 const editEmployeeSchema = z.object({
-  name: z.string().min(2, "Name is required"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  status: z.enum(["active", "inactive"]).optional(),
-  profile: z.string().optional(),
   phone: z.string().optional(),
+  profile: z.string().url("Invalid URL").optional(),
+  status: z.enum(["active", "inactive"]).optional(),
 });
 
 const Users = () => {
-  const { employees, isLoading, getEmployees, getEmployee, addEmployee, updateEmployee, deactivateEmployee } = useUsersStore();
-  
+  const { isLoading: authLoading } = useProtectedRoute();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // User store
+  const {
+    employees,
+    isLoading,
+    getEmployees,
+    addEmployee,
+    updateEmployee,
+    deactivateEmployee,
+  } = useUsersStore();
+
+  // Modal states
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null);
-  
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+
+  // Forms
   const addForm = useForm<z.infer<typeof addEmployeeSchema>>({
     resolver: zodResolver(addEmployeeSchema),
     defaultValues: {
       name: '',
       email: '',
       password: '',
-      profile: '',
       phone: '',
-    }
+      profile: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    },
   });
-  
+
   const editForm = useForm<z.infer<typeof editEmployeeSchema>>({
     resolver: zodResolver(editEmployeeSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      profile: '',
+      status: 'active',
+    },
   });
-  
-  // Open edit dialog with employee data
-  const handleEdit = (employee: any) => {
-    setSelectedEmployeeId(employee.id);
-    editForm.reset({
-      name: employee.name,
-      email: employee.email,
-      status: employee.status as "active" | "inactive",
-      profile: employee.profile || '',
-      phone: employee.phone || '',
-    });
-    setEditDialogOpen(true);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
   };
-  
-  // Handle employee deactivation
-  const handleDeactivate = async (id: number) => {
-    if (window.confirm('Are you sure you want to deactivate this employee?')) {
-      try {
-        await deactivateEmployee(id);
-        toast.success('Employee deactivated successfully');
-      } catch (error) {
-        toast.error('Failed to deactivate employee');
-      }
-    }
-  };
-  
+
+  // Load employees on mount
+  useEffect(() => {
+    getEmployees();
+  }, [getEmployees]);
+
+  // Filter employees by search query
+  const filteredEmployees = employees.filter(
+    (employee) =>
+      employee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      employee.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Handle form submissions
   const handleAddEmployee = async (data: z.infer<typeof addEmployeeSchema>) => {
     // Make sure all required fields are present
@@ -113,126 +138,190 @@ const Users = () => {
     }
   };
 
-  const contentVariants = {
+  const handleDeactivateEmployee = async () => {
+    if (selectedEmployeeId) {
+      await deactivateEmployee(selectedEmployeeId);
+      setConfirmDialogOpen(false);
+    }
+  };
+
+  // Open edit form and populate with employee data
+  const openEditDialog = (employee: typeof employees[0]) => {
+    setSelectedEmployeeId(employee.id);
+    editForm.reset({
+      name: employee.name,
+      email: employee.email,
+      phone: employee.phone || '',
+      profile: employee.profile || '',
+      status: employee.status as "active" | "inactive",
+    });
+    setEditDialogOpen(true);
+  };
+
+  // Open confirm dialog for deactivation
+  const openConfirmDialog = (id: number) => {
+    setSelectedEmployeeId(id);
+    setConfirmDialogOpen(true);
+  };
+
+  // Animation variants
+  const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.05 }
+      transition: {
+        staggerChildren: 0.1
+      }
     }
   };
 
   const itemVariants = {
-    hidden: { y: 10, opacity: 0 },
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: 'spring', stiffness: 100 }
+      transition: {
+        type: 'spring',
+        stiffness: 100
+      }
     }
   };
 
+  if (authLoading || isLoading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center">
+        <motion.div 
+          className="w-12 h-12 rounded-full border-4 border-t-theme-green-600 border-gray-200"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+    );
+  }
+
   return (
-    <DashboardLayout>
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={contentVariants} 
-        className="max-w-7xl mx-auto"
-      >
-        <motion.div variants={itemVariants} className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Users</h1>
-            <p className="text-gray-600 dark:text-gray-400">Manage your team members</p>
-          </div>
-          <Button onClick={() => setAddDialogOpen(true)}>
-            <FiPlus className="mr-2 h-4 w-4" /> Add Employee
-          </Button>
-        </motion.div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className={`${isMobile ? '' : 'lg:pl-64'} flex flex-col min-h-screen`}>
+        <Navbar toggleSidebar={toggleSidebar} />
         
-        <motion.div variants={itemVariants} className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          {isLoading ? (
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <Skeleton className="h-8 w-32" />
-                <Skeleton className="h-9 w-24" />
+        <main className="flex-1 p-4 lg:p-8">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="max-w-7xl mx-auto"
+          >
+            <motion.div variants={itemVariants} className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">User Management</h1>
+                <p className="text-gray-600 dark:text-gray-400">Manage your company employees</p>
               </div>
-              <div className="space-y-4">
-                <Skeleton className="h-12 w-full" />
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="flex items-center gap-4">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="flex-1">
-                      <Skeleton className="h-4 w-1/3 mb-2" />
-                      <Skeleton className="h-3 w-1/4" />
-                    </div>
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-8 w-8 rounded-md" />
-                    <Skeleton className="h-8 w-8 rounded-md" />
+              
+              <Button 
+                onClick={() => setAddDialogOpen(true)}
+                className="mt-4 md:mt-0 bg-theme-green-600 hover:bg-theme-green-700"
+              >
+                <UserPlus className="mr-2 h-4 w-4" /> Add Employee
+              </Button>
+            </motion.div>
+            
+            <motion.div variants={itemVariants}>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Employees</CardTitle>
+                  <CardDescription>View and manage your company employees</CardDescription>
+                  <div className="relative flex items-center mt-4">
+                    <Search className="absolute left-3 h-4 w-4 text-gray-400" />
+                    <Input
+                      placeholder="Search by name or email..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
                   </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {employees.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-gray-500">
-                        No employees found. Add your first employee to get started.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    employees.map((employee) => (
-                      <TableRow key={employee.id}>
-                        <TableCell className="font-medium">
-                          <div className="flex items-center gap-3">
-                            <Avatar>
-                              <AvatarImage src={employee.profile} alt={employee.name} />
-                              <AvatarFallback className="bg-theme-green-600 text-white">
-                                {employee.name.substring(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span>{employee.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell>{employee.email}</TableCell>
-                        <TableCell>{employee.phone || '—'}</TableCell>
-                        <TableCell>
-                          <Badge variant={employee.status === 'active' ? 'default' : 'outline'} className={employee.status === 'active' ? 'bg-theme-green-600' : ''}>
-                            {employee.status === 'active' ? 'Active' : 'Inactive'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right space-x-2">
-                          <Button variant="ghost" size="icon" onClick={() => handleEdit(employee)}>
-                            <FiEdit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20" 
-                            onClick={() => handleDeactivate(employee.id)}>
-                            <FiTrash className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </motion.div>
-      </motion.div>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>User</TableHead>
+                          <TableHead className="hidden md:table-cell">Email</TableHead>
+                          <TableHead className="hidden md:table-cell">Phone</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredEmployees.length > 0 ? (
+                          filteredEmployees.map((employee) => (
+                            <TableRow key={employee.id}>
+                              <TableCell className="py-3">
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-10 w-10">
+                                    <AvatarImage src={employee.profile} alt={employee.name} />
+                                    <AvatarFallback>{employee.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="font-semibold">{employee.name}</div>
+                                    <div className="text-xs text-muted-foreground md:hidden">{employee.email}</div>
+                                  </div>
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">{employee.email}</TableCell>
+                              <TableCell className="hidden md:table-cell">{employee.phone || "—"}</TableCell>
+                              <TableCell>
+                                <Badge variant={employee.status === "active" ? "outline" : "secondary"} className={`px-2 py-1 ${employee.status === "active" ? "bg-green-50 text-green-700 border-green-200" : "bg-gray-50 text-gray-700 border-gray-200"}`}>
+                                  {employee.status === "active" ? "Active" : "Inactive"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    onClick={() => openEditDialog(employee)}
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                    <span className="sr-only">Edit</span>
+                                  </Button>
+                                  <Button
+                                    onClick={() => openConfirmDialog(employee.id)}
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive/90"
+                                  >
+                                    <EyeOff className="h-4 w-4" />
+                                    <span className="sr-only">Deactivate</span>
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                              {searchQuery 
+                                ? "No employees found matching your search." 
+                                : "No employees found. Add your first employee."}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </main>
+      </div>
 
       {/* Add Employee Dialog */}
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Add New Employee</DialogTitle>
           </DialogHeader>
@@ -245,7 +334,7 @@ const Users = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full name" {...field} />
+                      <Input placeholder="John Doe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -258,7 +347,7 @@ const Users = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="Email address" {...field} />
+                      <Input placeholder="john@example.com" type="email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -271,7 +360,7 @@ const Users = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="Password" {...field} />
+                      <Input placeholder="••••••••" type="password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -284,30 +373,17 @@ const Users = () => {
                   <FormItem>
                     <FormLabel>Phone (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Phone number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={addForm.control}
-                name="profile"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profile URL (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Profile image URL" {...field} />
+                      <Input placeholder="+1234567890" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setAddDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" className="bg-theme-green-600 hover:bg-theme-green-700">
+                <Button type="submit" disabled={addForm.formState.isSubmitting}>
+                  {addForm.formState.isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   Add Employee
                 </Button>
               </DialogFooter>
@@ -318,7 +394,7 @@ const Users = () => {
 
       {/* Edit Employee Dialog */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Edit Employee</DialogTitle>
           </DialogHeader>
@@ -331,7 +407,7 @@ const Users = () => {
                   <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="Full name" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -344,7 +420,7 @@ const Users = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="Email address" {...field} />
+                      <Input type="email" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -357,49 +433,17 @@ const Users = () => {
                   <FormItem>
                     <FormLabel>Phone (Optional)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Phone number" {...field} value={field.value || ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={editForm.control}
-                name="profile"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Profile URL (Optional)</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Profile image URL" {...field} value={field.value || ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={editForm.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Status</FormLabel>
-                    <FormControl>
-                      <select 
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        {...field}
-                      >
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                      </select>
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setEditDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" className="bg-theme-green-600 hover:bg-theme-green-700">
+                <Button type="submit" disabled={editForm.formState.isSubmitting}>
+                  {editForm.formState.isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   Update Employee
                 </Button>
               </DialogFooter>
@@ -407,7 +451,33 @@ const Users = () => {
           </Form>
         </DialogContent>
       </Dialog>
-    </DashboardLayout>
+
+      {/* Confirm Deactivation Dialog */}
+      <Dialog open={confirmDialogOpen} onOpenChange={setConfirmDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Deactivate Employee</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p>Are you sure you want to deactivate this employee? They will no longer be able to log in.</p>
+            <p className="text-sm text-gray-500 mt-2">This action doesn't delete the employee's data but changes their status to inactive.</p>
+          </div>
+          <DialogFooter className="flex space-x-2 justify-end">
+            <Button variant="outline" onClick={() => setConfirmDialogOpen(false)}>
+              <X className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleDeactivateEmployee}
+              variant="destructive"
+            >
+              <EyeOff className="mr-2 h-4 w-4" />
+              Deactivate
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

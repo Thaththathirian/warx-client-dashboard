@@ -1,5 +1,6 @@
 
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiUsers, FiLogOut, FiMenu, FiX, FiGrid, FiShield } from 'react-icons/fi';
 import { useAuthStore } from '@/store/authStore';
@@ -14,22 +15,22 @@ interface SidebarProps {
 
 const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
 
   const handleLogout = () => {
     logout();
+    navigate('/login');
   };
 
   const sidebarVariants = {
     open: { 
       x: 0,
-      width: "16rem", // Fixed width when open
       transition: { type: "spring", stiffness: 300, damping: 30 }
     },
     closed: { 
-      x: isMobile ? "-100%" : 0,
-      width: isMobile ? "16rem" : "0rem",
+      x: "-100%",
       transition: { type: "spring", stiffness: 300, damping: 30 }
     }
   };
@@ -56,9 +57,9 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
           variants={sidebarVariants}
           initial={isMobile ? "closed" : "open"}
           animate={isOpen ? "open" : "closed"}
-          className={`fixed top-0 left-0 z-50 h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-sm ${isMobile ? 'lg:hidden' : 'lg:block'}`}
+          className={`fixed top-0 left-0 z-50 h-full w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-sm ${isMobile ? 'lg:relative' : 'relative'}`}
         >
-          <div className="flex flex-col h-full overflow-hidden">
+          <div className="flex flex-col h-full">
             {/* Logo and close button */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
               <Link to="/dashboard" className="flex items-center">
@@ -90,7 +91,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                       }`}
                     >
                       <span className="mr-3">{item.icon}</span>
-                      <span className="whitespace-nowrap">{item.name}</span>
+                      {item.name}
                     </Link>
                   </li>
                 ))}
@@ -106,8 +107,8 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                     {user?.name?.substring(0, 2).toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
-                <div className="ml-3 overflow-hidden">
-                  <p className="text-sm font-medium dark:text-white truncate">{user?.name || 'User'}</p>
+                <div className="ml-3">
+                  <p className="text-sm font-medium dark:text-white">{user?.name || 'User'}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[160px]">{user?.email || 'user@example.com'}</p>
                 </div>
               </div>
