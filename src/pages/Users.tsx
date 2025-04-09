@@ -1,7 +1,6 @@
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useUserStore } from '@/store/userStore';
+import { useUsersStore } from '@/store/userStore'; // Fixed import
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -35,7 +34,7 @@ const editEmployeeSchema = z.object({
 });
 
 const Users = () => {
-  const { employees, isLoading, addEmployee, updateEmployee, deactivateEmployee, fetchEmployees } = useUserStore();
+  const { employees, isLoading, getEmployees, getEmployee, addEmployee, updateEmployee, deactivateEmployee } = useUsersStore();
   
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
