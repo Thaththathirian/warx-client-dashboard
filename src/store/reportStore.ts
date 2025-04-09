@@ -4,11 +4,17 @@ import { devtools } from 'zustand/middleware';
 import axios from 'axios';
 import { toast } from 'sonner';
 
+export enum ReportStatus {
+  DETECTED = 0,
+  ACKNOWLEDGED = 1,
+  RESOLVED = 2
+}
+
 interface ExternalReport {
   id: number;
   reporter_id: number;
   link: string;
-  status: number;
+  status: ReportStatus;
   created_at: string;
   updated_at: string;
 }
