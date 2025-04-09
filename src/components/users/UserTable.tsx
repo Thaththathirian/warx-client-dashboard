@@ -95,8 +95,22 @@ export function UserTable() {
   const handleActivate = async (id: number) => {
     setIsDeletingId(id);
     try {
-      await updateEmployee(id, { status: 'active' });
-      toast.success('User has been activated successfully');
+      // Find the employee we want to activate
+      const employeeToActivate = employees.find(emp => emp.id === id);
+      
+      if (employeeToActivate) {
+        // Pass all required fields along with the status update
+        await updateEmployee(id, {
+          name: employeeToActivate.name,
+          email: employeeToActivate.email,
+          phone: employeeToActivate.phone,
+          profile: employeeToActivate.profile,
+          status: 'active'
+        });
+        toast.success('User has been activated successfully');
+      } else {
+        toast.error('User not found');
+      }
     } catch (error) {
       toast.error('Failed to activate user');
     } finally {
