@@ -15,9 +15,9 @@ export function AppSidebar() {
 
   const navItems = [
     { name: 'Dashboard', icon: <FiGrid className="h-5 w-5" />, path: '/dashboard' },
+    { name: 'Assets', icon: <FiImage className="h-5 w-5" />, path: '/assets' },
     { name: 'Users', icon: <FiUsers className="h-5 w-5" />, path: '/users' },
     { name: 'Reports', icon: <FiFileText className="h-5 w-5" />, path: '/reports' },
-    { name: 'Assets', icon: <FiImage className="h-5 w-5" />, path: '/assets' },
     { name: 'Content Protection', icon: <FiShield className="h-5 w-5" />, path: '/protection' },
   ];
 
