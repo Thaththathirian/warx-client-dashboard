@@ -24,7 +24,7 @@ interface ReportState {
 const API_BASE_URL = 'https://antipiracy.whyxpose.com/api';
 
 export const useReportStore = create<ReportState>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     reports: [],
     isLoading: false,
     error: null,
@@ -64,7 +64,8 @@ export const useReportStore = create<ReportState>()(
         
         if (response.status === 200) {
           toast.success('Report added successfully');
-          await set.getState().getReports(); // Refresh the list
+          // Use get() to access the getReports function
+          await get().getReports();
           set({ isLoading: false });
           return true;
         } else {
