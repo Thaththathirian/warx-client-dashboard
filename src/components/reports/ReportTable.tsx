@@ -1,5 +1,5 @@
 
-import { useReportStore } from '@/store/reportStore';
+import { useReportStore, ReportStatus } from '@/store/reportStore';
 import { formatDistanceToNow } from 'date-fns';
 import {
   Table,
@@ -10,19 +10,28 @@ import {
   TableCell
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Link2, ExternalLink } from 'lucide-react';
+import { Link2, ExternalLink, AlertTriangle, CheckCircle, CircleAlert } from 'lucide-react';
 
 export function ReportTable() {
   const { reports, isLoading } = useReportStore();
 
-  const getStatusBadge = (status: number) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case 0:
-        return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">Pending</Badge>;
-      case 1:
-        return <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">Processed</Badge>;
-      case 2:
-        return <Badge variant="outline" className="bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400">Rejected</Badge>;
+      case ReportStatus.DETECTED:
+        return <Badge variant="outline" className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400 flex items-center gap-1">
+          <AlertTriangle className="h-3 w-3" />
+          <span>Detected</span>
+        </Badge>;
+      case ReportStatus.ACKNOWLEDGED:
+        return <Badge variant="outline" className="bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400 flex items-center gap-1">
+          <CircleAlert className="h-3 w-3" />
+          <span>Acknowledged</span>
+        </Badge>;
+      case ReportStatus.RESOLVED:
+        return <Badge variant="outline" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 flex items-center gap-1">
+          <CheckCircle className="h-3 w-3" />
+          <span>Resolved</span>
+        </Badge>;
       default:
         return <Badge variant="outline">Unknown</Badge>;
     }

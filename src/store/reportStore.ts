@@ -5,16 +5,16 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 export enum ReportStatus {
-  DETECTED = 0,
-  ACKNOWLEDGED = 1,
-  RESOLVED = 2
+  DETECTED = 'detected',
+  ACKNOWLEDGED = 'acknowledged',
+  RESOLVED = 'resolved'
 }
 
 interface ExternalReport {
   id: number;
   reporter_id: number;
   link: string;
-  status: ReportStatus;
+  status: string;
   created_at: string;
   updated_at: string;
 }
@@ -70,7 +70,6 @@ export const useReportStore = create<ReportState>()(
         
         if (response.status === 200) {
           toast.success('Report added successfully');
-          // Use get() to access the getReports function
           await get().getReports();
           set({ isLoading: false });
           return true;
