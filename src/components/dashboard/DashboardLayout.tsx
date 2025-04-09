@@ -1,6 +1,7 @@
 
 import { ReactNode } from 'react';
 import { AppSidebar } from './AppSidebar';
+import { Header } from './Header';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/hooks/use-sidebar';
 
@@ -14,12 +15,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="flex h-screen w-full overflow-hidden">
       <AppSidebar />
-      <main className={cn(
-        "flex-1 overflow-auto transition-all duration-300 ease-in-out",
+      <div className={cn(
+        "flex flex-col flex-1 overflow-hidden transition-all duration-300 ease-in-out",
         isOpen ? "md:ml-64" : "md:ml-16"
       )}>
-        {children}
-      </main>
+        <Header />
+        <main className="flex-1 overflow-auto p-4 md:p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
