@@ -18,6 +18,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const currentYear = new Date().getFullYear();
 
   const handleLogout = () => {
     logout();
@@ -67,7 +68,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                   <FiShield className="text-white" />
                 </div>
                 <span className="font-bold text-xl bg-gradient-to-r from-theme-green-600 to-theme-green-400 bg-clip-text text-transparent">
-                  AntiPiracy
+                  WarX
                 </span>
               </Link>
               {isMobile && (
@@ -120,6 +121,9 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
                 <FiLogOut className="mr-2 h-4 w-4" />
                 Logout
               </Button>
+              <div className="mt-4 text-xs text-center text-gray-500 dark:text-gray-400">
+                &copy; {currentYear} WarX. All rights reserved.
+              </div>
             </div>
           </div>
         </motion.aside>
