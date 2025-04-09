@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
+import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider } from "@/hooks/use-sidebar";
 
@@ -26,6 +27,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/dashboard/:page" element={<Dashboard />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/reports" element={<Reports />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
