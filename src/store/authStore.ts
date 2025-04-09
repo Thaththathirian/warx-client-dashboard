@@ -39,6 +39,8 @@ export const useAuthStore = create<AuthState>()(
             const response = await axios.post(`${API_BASE_URL}/auth/company_login`, {
               email,
               password
+            }, {
+              withCredentials: true // Add this for cookie-based auth
             });
             
             if (response.status === 200) {
