@@ -32,7 +32,8 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       transition: { type: "spring", stiffness: 300, damping: 30 }
     },
     closed: { 
-      x: "-100%",
+      x: isMobile ? "-100%" : 0,
+      width: isMobile ? 0 : "auto",
       transition: { type: "spring", stiffness: 300, damping: 30 }
     }
   };
@@ -57,9 +58,9 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
       <AnimatePresence>
         <motion.aside
           variants={sidebarVariants}
-          initial={isMobile ? "closed" : "open"}
-          animate={isOpen ? "open" : "closed"}
-          className={`fixed top-0 left-0 z-40 h-screen w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-sm flex flex-col ${isMobile ? '' : 'lg:relative'}`}
+          initial={false}
+          animate={isOpen || !isMobile ? "open" : "closed"}
+          className={`fixed top-0 left-0 z-40 h-screen w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shadow-sm flex flex-col ${isMobile ? '' : 'lg:static'}`}
         >
           {/* Logo and close button - fixed at top */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">

@@ -14,7 +14,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <div className="flex min-h-screen bg-background">
+      <div className="min-h-screen bg-background">
         <Toaster />
         <Sonner />
         <BrowserRouter>
