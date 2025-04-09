@@ -26,7 +26,8 @@ import {
   XCircle, 
   Search,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Check
 } from 'lucide-react';
 import { UserDialog } from './UserDialog';
 import { toast } from 'sonner';
@@ -60,6 +61,7 @@ export function UserTable() {
     employees, 
     isLoading, 
     deactivateEmployee, 
+    updateEmployee,
     totalPages, 
     currentPage, 
     setCurrentPage,
@@ -85,6 +87,18 @@ export function UserTable() {
       toast.success('User has been deactivated successfully');
     } catch (error) {
       toast.error('Failed to deactivate user');
+    } finally {
+      setIsDeletingId(null);
+    }
+  };
+  
+  const handleActivate = async (id: number) => {
+    setIsDeletingId(id);
+    try {
+      await updateEmployee(id, { status: 'active' });
+      toast.success('User has been activated successfully');
+    } catch (error) {
+      toast.error('Failed to activate user');
     } finally {
       setIsDeletingId(null);
     }
@@ -270,19 +284,32 @@ export function UserTable() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDeactivate(employee.id)}
-                              disabled={isDeletingId === employee.id || employee.status !== 'active'}
-                              className={`h-8 w-8 p-0 ${employee.status === 'active' ? 'text-red-600 hover:text-red-700 hover:bg-red-50' : 'text-gray-400'}`}
-                            >
-                              <XCircle className="h-4 w-4" />
-                              <span className="sr-only">Deactivate user</span>
-                            </Button>
+                            {employee.status === 'active' ? (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDeactivate(employee.id)}
+                                disabled={isDeletingId === employee.id}
+                                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                              >
+                                <XCircle className="h-4 w-4" />
+                                <span className="sr-only">Deactivate user</span>
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleActivate(employee.id)}
+                                disabled={isDeletingId === employee.id}
+                                className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                              >
+                                <Check className="h-4 w-4" />
+                                <span className="sr-only">Activate user</span>
+                              </Button>
+                            )}
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Deactivate user</p>
+                            <p>{employee.status === 'active' ? 'Deactivate user' : 'Activate user'}</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
