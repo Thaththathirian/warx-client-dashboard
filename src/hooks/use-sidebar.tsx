@@ -1,19 +1,32 @@
 
-import { useState, useEffect } from 'react';
+import { useSidebar as useUISidebar } from "@/components/ui/sidebar";
 import { useIsMobile } from './use-mobile';
+import { useEffect } from 'react';
 
 export function useSidebar() {
-  const isMobile = useIsMobile();
-  const [isOpen, setIsOpen] = useState(!isMobile); // Open by default on desktop
+  const { 
+    open: isOpen, 
+    setOpen: setIsOpen, 
+    openMobile, 
+    setOpenMobile,
+    toggleSidebar,
+    isMobile
+  } = useUISidebar();
 
+  // Auto-collapse on mobile when component mounts
   useEffect(() => {
-    // When screen size changes, adjust sidebar state
-    setIsOpen(!isMobile); // Auto-open on desktop, closed on mobile
-  }, [isMobile]);
+    if (isMobile) {
+      setIsOpen(false);
+      setOpenMobile(false);
+    } else {
+      setIsOpen(true);
+    }
+  }, [isMobile, setIsOpen, setOpenMobile]);
 
-  const toggleSidebar = () => {
-    setIsOpen(prev => !prev);
+  return {
+    isOpen,
+    openMobile,
+    toggleSidebar,
+    isMobile
   };
-
-  return { isOpen, toggleSidebar, isMobile };
 }
