@@ -107,14 +107,32 @@ const Users = () => {
 
   // Handle form submissions
   const handleAddEmployee = async (data: z.infer<typeof addEmployeeSchema>) => {
-    await addEmployee(data);
+    // Make sure all required fields are present
+    const employeeData = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      phone: data.phone,
+      profile: data.profile,
+    };
+    
+    await addEmployee(employeeData);
     setAddDialogOpen(false);
     addForm.reset();
   };
 
   const handleEditEmployee = async (data: z.infer<typeof editEmployeeSchema>) => {
     if (selectedEmployeeId) {
-      await updateEmployee(selectedEmployeeId, data);
+      // Make sure all required fields are present
+      const updateData = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        profile: data.profile,
+        status: data.status
+      };
+      
+      await updateEmployee(selectedEmployeeId, updateData);
       setEditDialogOpen(false);
       editForm.reset();
     }
