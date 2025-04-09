@@ -51,15 +51,17 @@ export function Header() {
   return (
     <header 
       className={cn(
-        "sticky top-0 z-40 w-full backdrop-blur-sm transition-all duration-200",
-        scrolled ? "bg-white/90 dark:bg-gray-900/90 border-b shadow-sm" : "bg-transparent"
+        "sticky top-0 z-40 w-full transition-all duration-200",
+        scrolled 
+          ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b shadow-soft" 
+          : "bg-transparent"
       )}
     >
       <div className="flex h-16 items-center px-4 md:px-6">
         <Button 
           variant="ghost" 
           size="icon" 
-          className="mr-2 md:hidden" 
+          className="mr-2 md:hidden rounded-full" 
           onClick={toggleSidebar}
         >
           <Menu className="h-5 w-5" />
@@ -68,7 +70,7 @@ export function Header() {
         
         <div className="hidden md:flex items-center gap-2">
           <div className="flex items-center gap-1.5">
-            <span className="text-xl font-medium text-primary">Anti-Piracy</span>
+            <span className="text-xl font-medium bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Anti-Piracy</span>
           </div>
         </div>
 
@@ -80,16 +82,16 @@ export function Header() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
               placeholder="Search..."
-              className="pl-10 w-full bg-background/80 border-muted focus-visible:ring-primary"
+              className="pl-10 w-full bg-background/80 rounded-full border-muted focus-visible:ring-primary"
             />
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Button 
             variant="ghost" 
             size="icon" 
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground rounded-full"
             aria-label="Notifications"
           >
             <Bell className="h-5 w-5" />
@@ -98,7 +100,7 @@ export function Header() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground rounded-full"
             aria-label="Settings"
           >
             <Settings className="h-5 w-5" />
@@ -107,7 +109,7 @@ export function Header() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground rounded-full"
             aria-label="Help"
           >
             <HelpCircle className="h-5 w-5" />
@@ -115,7 +117,7 @@ export function Header() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+              <Button variant="ghost" className="relative h-9 w-9 rounded-full border-2 border-transparent hover:border-primary/20">
                 <Avatar>
                   <AvatarImage src={user?.profile} alt={user?.name || 'User'} />
                   <AvatarFallback className="bg-primary/10 text-primary">
@@ -124,7 +126,7 @@ export function Header() {
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className="w-56 mt-1 rounded-xl shadow-medium">
               <DropdownMenuLabel>
                 <div className="flex flex-col">
                   <span>{user?.name || 'User'}</span>

@@ -16,12 +16,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <div className="flex h-screen w-full overflow-hidden">
       <AppSidebar />
       <div className={cn(
-        "flex flex-col flex-1 overflow-hidden transition-all duration-300 ease-in-out",
+        "flex flex-col flex-1 overflow-hidden transition-all duration-300 ease-in-out bg-background",
         isOpen ? "md:ml-64" : "md:ml-16"
       )}>
         <Header />
-        <main className="flex-1 overflow-auto p-4 md:p-6">
-          {children}
+        <main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
+          <div className="max-w-7xl mx-auto animate-fade-in">
+            {children}
+          </div>
         </main>
       </div>
     </div>
