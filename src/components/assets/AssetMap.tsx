@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +13,7 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
 // Fix for marker icons not displaying correctly
-const DefaultIcon = L.icon({
+let DefaultIcon = L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow,
   iconSize: [25, 41],
@@ -21,14 +21,16 @@ const DefaultIcon = L.icon({
   popupAnchor: [1, -34],
 });
 
+// Set the default icon for all markers
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const AssetMap = () => {
   const { assetDetail } = useAssetStore();
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [map, setMap] = useState(null);
 
   // Helper function to create custom icons based on seeder status
-  const createCustomIcon = (isSeeder: boolean) => {
+  const createCustomIcon = (isSeeder) => {
     return L.divIcon({
       className: 'custom-div-icon',
       html: `<div style="background-color: ${isSeeder ? '#22c55e' : '#f97316'}; width: 10px; height: 10px; border-radius: 50%; border: 1px solid white;"></div>`,
@@ -37,7 +39,7 @@ const AssetMap = () => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Set loading to false after a short delay to ensure the map has time to initialize
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -90,6 +92,7 @@ const AssetMap = () => {
             style={{ height: '100%', width: '100%', background: '#242731' }}
             zoomControl={false}
             attributionControl={false}
+            whenCreated={setMap}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
