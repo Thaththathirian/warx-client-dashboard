@@ -26,16 +26,117 @@ interface AssetResponse {
   assets: Asset[];
 }
 
+interface DailyStats {
+  day: string;
+  count: {
+    detected: number;
+    enforced: number;
+    removed: number;
+  };
+}
+
+interface WeeklyStats {
+  week: string;
+  count: {
+    detected: number;
+    enforced: number;
+    removed: number;
+  };
+}
+
+interface MonthlyStats {
+  month: string;
+  count: {
+    detected: number;
+    enforced: number;
+    removed: number;
+  };
+}
+
+interface CountItem {
+  name: string;
+  icon: string;
+  color_code: string;
+  link_count: number;
+}
+
+interface TorrentActivity {
+  date: string;
+  unique_ips: number;
+}
+
+interface CountryStats {
+  country: string;
+  country_code: string;
+  leechers: number;
+  seeders: number;
+  total: number;
+}
+
+interface IspStats {
+  count: number;
+  isp: string;
+}
+
+export interface AssetDetail {
+  statistics: {
+    daily_stats: DailyStats[];
+    weekly_stats: WeeklyStats[];
+    monthly_stats: MonthlyStats[];
+    today: { detected: number; enforced: number; removed: number };
+    yesterday: { detected: number; enforced: number; removed: number };
+    this_week: { detected: number; enforced: number; removed: number };
+    last_week: { detected: number; enforced: number; removed: number };
+    start_date: string;
+    end_date: string;
+  };
+  count: {
+    detected: CountItem[];
+    enforced: CountItem[];
+    removed: CountItem[];
+    totals: {
+      detected: number;
+      enforced: number;
+      removed: number;
+    };
+    grand_total: number;
+  };
+  asset: Asset;
+  torrent?: {
+    activity: TorrentActivity[];
+    client_stats: { client: string; count: number }[];
+    country_stats: CountryStats[];
+    isp_stats: IspStats[];
+    project: {
+      created_at: string;
+      description: string;
+      id: number;
+      image_url: string;
+      name: string;
+    };
+    stats: {
+      leecher_count: number;
+      peer_count: number;
+      seeder_count: number;
+      torrent_count: number;
+      unique_ip_count: number;
+    };
+  };
+}
+
 interface AssetState {
   assets: Asset[];
   selectedAsset: Asset | null;
+  assetDetail: AssetDetail | null;
   isLoading: boolean;
+  isLoadingDetail: boolean;
   error: string | null;
   totalAssets: number;
   currentPage: number;
   totalPages: number;
   getAssets: (page?: number, limit?: number) => Promise<void>;
   selectAsset: (asset: Asset) => void;
+  getAssetDetail: (id: number) => Promise<void>;
 }
 
 const API_BASE_URL = 'https://antipiracy.whyxpose.com/api';
@@ -44,7 +145,9 @@ export const useAssetStore = create<AssetState>()(
   devtools((set, get) => ({
     assets: [],
     selectedAsset: null,
+    assetDetail: null,
     isLoading: false,
+    isLoadingDetail: false,
     error: null,
     totalAssets: 0,
     currentPage: 1,
@@ -81,6 +184,33 @@ export const useAssetStore = create<AssetState>()(
 
     selectAsset: (asset: Asset) => {
       set({ selectedAsset: asset });
+      if (asset) {
+        get().getAssetDetail(asset.id);
+      }
+    },
+
+    getAssetDetail: async (id: number) => {
+      set({ isLoadingDetail: true, error: null });
+      try {
+        const response = await axios.get(`${API_BASE_URL}/company/get_asset/${id}`, {
+          withCredentials: true
+        });
+        
+        if (response.status === 200) {
+          set({
+            assetDetail: response.data,
+            isLoadingDetail: false
+          });
+        } else {
+          set({ isLoadingDetail: false, error: 'Failed to fetch asset details' });
+        }
+      } catch (error: any) {
+        set({
+          isLoadingDetail: false,
+          error: error.response?.data?.message || 'Failed to fetch asset details'
+        });
+        toast.error(error.response?.data?.message || 'Failed to fetch asset details');
+      }
     }
   }))
 );
