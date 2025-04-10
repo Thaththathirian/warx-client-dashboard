@@ -22,7 +22,7 @@ interface IspDistributionChartProps {
 
 const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="flex items-center">
           <BarChart className="h-5 w-5 mr-2" />
@@ -30,7 +30,7 @@ const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[250px] w-full">
           <ChartContainer 
             config={{
               value: { color: "#8b5cf6" },
@@ -40,7 +40,7 @@ const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
               <RechartsBarChart
                 data={ispData}
                 layout="vertical"
-                margin={{ top: 10, right: 10, left: 120, bottom: 10 }}
+                margin={{ top: 5, right: 5, left: 120, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
                 <XAxis type="number" fontSize={12} />

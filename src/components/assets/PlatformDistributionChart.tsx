@@ -23,7 +23,7 @@ interface PlatformDistributionChartProps {
 
 const PlatformDistributionChart = ({ platformData }: PlatformDistributionChartProps) => {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="pb-2">
         <div className="flex items-center">
           <PieIcon className="mr-2 h-5 w-5" />
@@ -34,16 +34,16 @@ const PlatformDistributionChart = ({ platformData }: PlatformDistributionChartPr
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[240px] w-full">
+        <div className="h-[200px] w-full">
           <ChartContainer config={{}}>
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                 <Pie
                   data={platformData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  outerRadius={80}
+                  outerRadius={70}
                   fill="#8884d8"
                   dataKey="value"
                   nameKey="name"

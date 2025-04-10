@@ -26,7 +26,7 @@ interface CountryDistributionChartProps {
 
 const CountryDistributionChart = ({ countryData }: CountryDistributionChartProps) => {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="pb-2">
         <div className="flex items-center">
           <Globe className="mr-2 h-5 w-5" />
@@ -37,7 +37,7 @@ const CountryDistributionChart = ({ countryData }: CountryDistributionChartProps
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[250px] w-full">
           <ChartContainer 
             config={{
               total: { color: "#3b82f6" },
@@ -49,7 +49,7 @@ const CountryDistributionChart = ({ countryData }: CountryDistributionChartProps
               <BarChart
                 data={countryData}
                 layout="vertical"
-                margin={{ top: 10, right: 10, left: 80, bottom: 10 }}
+                margin={{ top: 5, right: 5, left: 80, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
                 <XAxis type="number" fontSize={12} />

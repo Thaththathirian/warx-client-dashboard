@@ -26,7 +26,7 @@ interface TorrentActivityChartProps {
 
 const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityChartProps) => {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="pb-2">
         <div className="flex items-center">
           <Network className="mr-2 h-5 w-5" />
@@ -34,7 +34,7 @@ const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityCha
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[200px] w-full">
+        <div className="h-[170px] w-full">
           <ChartContainer
             config={{
               uniqueIPs: { color: "#8b5cf6" },
@@ -43,7 +43,7 @@ const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityCha
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={torrentActivityData}
-                margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis 
@@ -66,7 +66,7 @@ const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityCha
             </ResponsiveContainer>
           </ChartContainer>
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-2 gap-4 mt-2">
           <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
             <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Seeders</div>
             <div className="text-lg font-bold">{stats.seeder_count || 0}</div>

@@ -21,6 +21,10 @@ import AssetDetailsInfo from './AssetDetailsInfo';
 import AssetDetailSkeleton from './AssetDetailSkeleton';
 import { AssetHeader } from './AssetHeader';
 
+// Also import the missing components that were referenced
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+
 interface AssetDetailProps {
   asset: Asset;
 }
@@ -303,7 +307,3 @@ export function AssetDetail({ asset }: AssetDetailProps) {
     </div>
   );
 }
-
-// Also import the missing components that were referenced
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';

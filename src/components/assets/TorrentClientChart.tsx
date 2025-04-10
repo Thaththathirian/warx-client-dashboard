@@ -20,7 +20,7 @@ const TorrentClientChart = () => {
   
   if (!assetDetail?.torrent?.client_stats || assetDetail.torrent.client_stats.length === 0) {
     return (
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="flex items-center">
             <PieIcon className="h-5 w-5 mr-2" />
@@ -43,7 +43,7 @@ const TorrentClientChart = () => {
   }));
 
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle className="flex items-center">
           <PieIcon className="h-5 w-5 mr-2" />
@@ -51,18 +51,18 @@ const TorrentClientChart = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[250px] w-full">
           <ChartContainer
             config={{}}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  outerRadius={100}
+                  outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
                   nameKey="name"

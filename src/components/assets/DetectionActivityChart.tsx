@@ -28,7 +28,7 @@ const DetectionActivityChart = ({
   colors 
 }: DetectionActivityChartProps) => {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <div className="flex items-center">
           <Activity className="mr-2 h-5 w-5" />
@@ -47,7 +47,7 @@ const DetectionActivityChart = ({
         </Tabs>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] w-full">
+        <div className="h-[250px] w-full">
           <ChartContainer
             config={{
               detected: { color: colors.detected },
@@ -56,7 +56,7 @@ const DetectionActivityChart = ({
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={detectionData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <AreaChart data={detectionData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
                 <defs>
                   <linearGradient id="colorDetected" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={colors.detected} stopOpacity={0.8}/>
