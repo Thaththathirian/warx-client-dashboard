@@ -1,89 +1,109 @@
 
-import { useAssetStore } from '@/store/assetStore';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { useAssetStore, Asset } from '@/store/assetStore';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { AlertCircle, Calendar, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Calendar, Image } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
-export function AssetGrid() {
+interface AssetGridProps {
+  onAssetClick?: (asset: Asset) => void;
+}
+
+export function AssetGrid({ onAssetClick }: AssetGridProps) {
   const { assets, isLoading, selectAsset } = useAssetStore();
+  const navigate = useNavigate();
+
+  const handleAssetClick = (asset: Asset) => {
+    selectAsset(asset);
+    if (onAssetClick) {
+      onAssetClick(asset);
+    } else {
+      navigate(`/assets/${asset.id}`);
+    }
+  };
 
   if (isLoading) {
     return (
-      <div className="w-full h-64 flex items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <Card key={index} className="overflow-hidden">
+            <div className="h-40 bg-gray-200 animate-pulse" />
+            <CardContent className="p-4">
+              <div className="h-6 bg-gray-200 animate-pulse rounded w-3/4 mb-2" />
+              <div className="h-4 bg-gray-200 animate-pulse rounded w-1/2 mb-2" />
+              <div className="h-4 bg-gray-200 animate-pulse rounded w-1/3" />
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   }
 
-  if (!assets.length) {
+  if (assets.length === 0) {
     return (
-      <div className="text-center py-10 border rounded-md bg-white dark:bg-gray-800">
-        <Image className="w-10 h-10 mx-auto text-gray-400" />
-        <h3 className="mt-4 text-sm font-medium text-gray-900 dark:text-gray-100">No assets found</h3>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Your content assets will appear here once they are added.
-        </p>
-      </div>
+      <Card className="p-6 text-center">
+        <div className="flex flex-col items-center justify-center gap-2">
+          <AlertCircle className="h-10 w-10 text-muted-foreground" />
+          <h3 className="text-xl font-semibold">No assets found</h3>
+          <p className="text-muted-foreground">There are no content assets available for monitoring.</p>
+        </div>
+      </Card>
     );
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {assets.map((asset) => (
-        <Card key={asset.id} className="overflow-hidden hover:shadow-md transition-shadow">
-          <div className="aspect-video relative bg-gray-100 dark:bg-gray-800">
-            {asset.image ? (
-              <img 
-                src={asset.image} 
-                alt={asset.name}
-                className="w-full h-full object-cover" 
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <Image className="h-16 w-16 text-gray-300" />
+      {assets.map((asset) => {
+        const startDate = new Date(asset.start_date);
+        const endDate = new Date(asset.end_date);
+        
+        return (
+          <Card key={asset.id} className="overflow-hidden hover:shadow-md transition-shadow duration-200">
+            <div className="h-40 bg-gray-100 relative flex items-center justify-center overflow-hidden">
+              {asset.image ? (
+                <img 
+                  src={asset.image} 
+                  alt={asset.name} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-muted-foreground">
+                  <ImageIcon className="h-10 w-10 mb-2" />
+                  <span>No image</span>
+                </div>
+              )}
+              <div className="absolute top-2 right-2">
+                <Badge variant={asset.status === 'active' ? 'success' : 'outline'}>
+                  {asset.status}
+                </Badge>
               </div>
-            )}
-            <div className="absolute top-2 right-2">
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                asset.status === 'active' 
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' 
-                  : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-              }`}>
-                {asset.status}
-              </span>
             </div>
-          </div>
-          
-          <CardHeader className="pb-2">
-            <h3 className="text-lg font-semibold truncate">{asset.name}</h3>
-          </CardHeader>
-          
-          <CardContent className="pb-3">
-            <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{asset.description}</p>
-            
-            <div className="mt-3 flex items-center text-xs text-gray-500 dark:text-gray-400">
-              <Calendar className="mr-1 h-3 w-3" />
-              <span>
-                {new Date(asset.start_date).toLocaleDateString()} - {new Date(asset.end_date).toLocaleDateString()}
-              </span>
-            </div>
-          </CardContent>
-          
-          <CardFooter className="pt-0 flex justify-between items-center">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Updated {formatDistanceToNow(new Date(asset.updated_at), { addSuffix: true })}
-            </span>
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => selectAsset(asset)}
-            >
-              View Details
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
+            <CardContent className="p-4">
+              <h3 className="text-lg font-semibold mb-1 line-clamp-1">{asset.name}</h3>
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                {asset.description || 'No description available'}
+              </p>
+              <div className="flex items-center text-xs text-muted-foreground">
+                <Calendar className="h-3.5 w-3.5 mr-1" />
+                <span>
+                  {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}
+                </span>
+              </div>
+            </CardContent>
+            <CardFooter className="px-4 pb-4 pt-0">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full"
+                onClick={() => handleAssetClick(asset)}
+              >
+                View Details
+              </Button>
+            </CardFooter>
+          </Card>
+        );
+      })}
     </div>
   );
 }

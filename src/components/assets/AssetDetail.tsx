@@ -4,7 +4,7 @@ import { useAssetStore, Asset } from '@/store/assetStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatCard from '@/components/dashboard/StatCard';
-import { Activity, Users, Network, Database, ArrowLeft } from 'lucide-react';
+import { Activity, Users, Network, Database } from 'lucide-react';
 import { Shield, Check } from './icons/CustomIcons';
 import AssetMap from './AssetMap';
 import PiratedLinksTable from './PiratedLinksTable';
@@ -20,10 +20,8 @@ import TorrentActivityChart from './TorrentActivityChart';
 import AssetDetailsInfo from './AssetDetailsInfo';
 import AssetDetailSkeleton from './AssetDetailSkeleton';
 import { AssetHeader } from './AssetHeader';
-
-// Also import the missing components that were referenced
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import PiratedLinksBarChart from './PiratedLinksBarChart';
+import TorrentClientBarChart from './TorrentClientBarChart';
 
 interface AssetDetailProps {
   asset: Asset;
@@ -36,13 +34,9 @@ const COLORS = {
 };
 
 export function AssetDetail({ asset }: AssetDetailProps) {
-  const { selectAsset, assetDetail, isLoadingDetail } = useAssetStore();
+  const { assetDetail, isLoadingDetail } = useAssetStore();
   const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [activeTab, setActiveTab] = useState<'overview' | 'torrents' | 'links'>('overview');
-
-  const handleBack = () => {
-    selectAsset(null);
-  };
 
   // Get the activity data based on the selected timeframe
   const getActivityData = () => {
@@ -139,27 +133,12 @@ export function AssetDetail({ asset }: AssetDetailProps) {
   };
 
   if (isLoadingDetail) {
-    return <AssetDetailSkeleton onBack={handleBack} />;
+    return <AssetDetailSkeleton />;
   }
 
   if (!assetDetail) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={handleBack}
-            className="flex items-center"
-          >
-            <ArrowLeft className="mr-1 h-4 w-4" />
-            Back to all assets
-          </Button>
-          <Badge variant={asset.status === 'active' ? 'success' : 'outline'}>
-            {asset.status}
-          </Badge>
-        </div>
-        
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-center h-40">
@@ -182,7 +161,6 @@ export function AssetDetail({ asset }: AssetDetailProps) {
     <div className="space-y-6">
       <AssetHeader 
         asset={asset} 
-        onBack={handleBack} 
         assetDetail={assetDetail} 
         calculateProgress={calculateProgress} 
       />
@@ -224,10 +202,13 @@ export function AssetDetail({ asset }: AssetDetailProps) {
                 detectionData={detectionData} 
                 colors={COLORS} 
               />
-
-              {hasTorrentData && (
-                <CountryDistributionChart countryData={countryData} />
-              )}
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {hasTorrentData && (
+                  <CountryDistributionChart countryData={countryData} />
+                )}
+                <PiratedLinksBarChart />
+              </div>
             </div>
             
             <div className="space-y-6">
@@ -284,10 +265,13 @@ export function AssetDetail({ asset }: AssetDetailProps) {
 
               <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                 <AssetMap />
-                <TorrentClientChart />
+                <TorrentClientBarChart />
               </div>
 
-              <IspDistributionChart ispData={ispData} />
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <IspDistributionChart ispData={ispData} />
+                <TorrentClientChart />
+              </div>
 
               <LatestPeersTable />
             </>
@@ -295,13 +279,16 @@ export function AssetDetail({ asset }: AssetDetailProps) {
         </TabsContent>
 
         <TabsContent value="links" className="space-y-6 mt-6">
-          <PiratedLinksTable />
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+            <PiratedLinksBarChart />
+            <DetectionTimelineChart 
+              detectionData={detectionData} 
+              timeframe={timeframe} 
+              colors={COLORS} 
+            />
+          </div>
           
-          <DetectionTimelineChart 
-            detectionData={detectionData} 
-            timeframe={timeframe} 
-            colors={COLORS} 
-          />
+          <PiratedLinksTable />
         </TabsContent>
       </Tabs>
     </div>

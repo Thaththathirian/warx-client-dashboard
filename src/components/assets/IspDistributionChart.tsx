@@ -21,6 +21,15 @@ interface IspDistributionChartProps {
 }
 
 const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
+  // Add colors to the ISP data
+  const coloredIspData = ispData.map((item, index) => {
+    const colors = ["#8b5cf6", "#a855f7", "#d946ef", "#ec4899", "#f43f5e"];
+    return {
+      ...item,
+      fill: colors[index % colors.length]
+    };
+  });
+  
   return (
     <Card className="h-full">
       <CardHeader>
@@ -30,7 +39,7 @@ const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[250px] w-full">
+        <div className="h-[300px] w-full">
           <ChartContainer 
             config={{
               value: { color: "#8b5cf6" },
@@ -38,7 +47,7 @@ const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
           >
             <ResponsiveContainer width="100%" height="100%">
               <RechartsBarChart
-                data={ispData}
+                data={coloredIspData}
                 layout="vertical"
                 margin={{ top: 5, right: 5, left: 120, bottom: 5 }}
               >

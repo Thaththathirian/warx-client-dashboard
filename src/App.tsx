@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Users from "./pages/Users";
 import Reports from "./pages/Reports";
 import Assets from "./pages/Assets";
+import AssetDetail from "./pages/AssetDetail";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider } from "@/hooks/use-sidebar";
 import React from 'react';
@@ -34,7 +35,7 @@ const App = () => {
                   <Route path="/users" element={<Users />} />
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/assets" element={<Assets />} />
-                  <Route path="/assets/:id" element={<Assets />} />
+                  <Route path="/assets/:id" element={<AssetDetail />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </div>
