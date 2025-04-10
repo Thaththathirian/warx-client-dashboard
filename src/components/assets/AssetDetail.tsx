@@ -4,7 +4,7 @@ import { useAssetStore, Asset } from '@/store/assetStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatCard from '@/components/dashboard/StatCard';
-import { Activity, Users, Network, Database } from 'lucide-react';
+import { Activity, Users, Network, Database, ArrowLeft } from 'lucide-react';
 import { Shield, Check } from './icons/CustomIcons';
 import AssetMap from './AssetMap';
 import PiratedLinksTable from './PiratedLinksTable';
