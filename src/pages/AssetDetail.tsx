@@ -12,7 +12,7 @@ const AssetDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const { getAssets, assets, selectedAsset, selectAsset } = useAssetStore();
+  const { getAssets, assets, selectedAsset, selectAsset, getAssetDetail } = useAssetStore();
 
   useEffect(() => {
     if (!user) {
@@ -30,9 +30,12 @@ const AssetDetailPage = () => {
       const asset = assets.find(a => a.id.toString() === id);
       if (asset) {
         selectAsset(asset);
+      } else if (id) {
+        // If we couldn't find the asset in the loaded assets, try to get its details directly
+        getAssetDetail(parseInt(id));
       }
     }
-  }, [id, user, assets, selectedAsset, navigate, getAssets, selectAsset]);
+  }, [id, user, assets, selectedAsset, navigate, getAssets, selectAsset, getAssetDetail]);
 
   const handleBack = () => {
     navigate('/assets');
