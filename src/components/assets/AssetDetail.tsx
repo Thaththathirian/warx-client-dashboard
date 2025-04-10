@@ -22,6 +22,7 @@ import AssetDetailSkeleton from './AssetDetailSkeleton';
 import { AssetHeader } from './AssetHeader';
 import PiratedLinksBarChart from './PiratedLinksBarChart';
 import TorrentClientBarChart from './TorrentClientBarChart';
+import PiratedLinksComparisonChart from './PiratedLinksComparisonChart';
 
 interface AssetDetailProps {
   asset: Asset;
@@ -288,6 +289,10 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
               timeframe={timeframe} 
               colors={COLORS} 
             />
+          </div>
+          
+          <div className="mb-6">
+            <PiratedLinksComparisonChart />
           </div>
           
           <PiratedLinksTable />
