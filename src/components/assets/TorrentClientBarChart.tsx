@@ -36,14 +36,14 @@ const TorrentClientBarChart = () => {
 
   return (
     <Card className="h-full">
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center">
           <Database className="h-5 w-5 mr-2" />
           Torrent Client Distribution
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[300px] w-full">
+      <CardContent className="pt-0">
+        <div className="h-[320px] w-full">
           <ChartContainer 
             config={{
               count: { color: "#8b5cf6" },
@@ -52,7 +52,7 @@ const TorrentClientBarChart = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={clientData}
-                margin={{ top: 5, right: 5, left: 5, bottom: 20 }}
+                margin={{ top: 5, right: 5, left: 5, bottom: 60 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis 

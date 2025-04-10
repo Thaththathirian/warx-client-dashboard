@@ -32,14 +32,14 @@ const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
   
   return (
     <Card className="h-full">
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center">
           <BarChart className="h-5 w-5 mr-2" />
           Top ISP Distribution
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[300px] w-full">
+      <CardContent className="pt-0">
+        <div className="h-[320px] w-full">
           <ChartContainer 
             config={{
               value: { color: "#8b5cf6" },
@@ -49,7 +49,7 @@ const IspDistributionChart = ({ ispData }: IspDistributionChartProps) => {
               <RechartsBarChart
                 data={coloredIspData}
                 layout="vertical"
-                margin={{ top: 5, right: 5, left: 120, bottom: 5 }}
+                margin={{ top: 5, right: 30, left: 130, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
                 <XAxis type="number" fontSize={12} />

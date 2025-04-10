@@ -34,7 +34,7 @@ const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityCha
         </div>
       </CardHeader>
       <CardContent>
-        <div className="h-[170px] w-full">
+        <div className="h-[200px] w-full">
           <ChartContainer
             config={{
               uniqueIPs: { color: "#8b5cf6" },

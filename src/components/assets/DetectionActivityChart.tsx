@@ -11,7 +11,8 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis
+  YAxis,
+  Legend
 } from 'recharts';
 
 interface DetectionActivityChartProps {
@@ -46,8 +47,8 @@ const DetectionActivityChart = ({
           </TabsList>
         </Tabs>
       </CardHeader>
-      <CardContent>
-        <div className="h-[250px] w-full">
+      <CardContent className="pt-2">
+        <div className="h-[320px] w-full">
           <ChartContainer
             config={{
               detected: { color: colors.detected },
@@ -56,7 +57,7 @@ const DetectionActivityChart = ({
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={detectionData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+              <AreaChart data={detectionData} margin={{ top: 5, right: 5, left: 10, bottom: 5 }}>
                 <defs>
                   <linearGradient id="colorDetected" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor={colors.detected} stopOpacity={0.8}/>
@@ -87,12 +88,14 @@ const DetectionActivityChart = ({
                 <YAxis fontSize={12} />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <Tooltip content={<ChartTooltipContent />} />
+                <Legend />
                 <Area 
                   type="monotone" 
                   dataKey="detected" 
                   stroke={colors.detected} 
                   fillOpacity={1} 
                   fill="url(#colorDetected)" 
+                  name="Detected"
                 />
                 <Area 
                   type="monotone" 
@@ -100,6 +103,7 @@ const DetectionActivityChart = ({
                   stroke={colors.enforced} 
                   fillOpacity={1} 
                   fill="url(#colorEnforced)" 
+                  name="Enforced"
                 />
                 <Area 
                   type="monotone" 
@@ -107,6 +111,7 @@ const DetectionActivityChart = ({
                   stroke={colors.removed} 
                   fillOpacity={1}
                   fill="url(#colorRemoved)" 
+                  name="Removed"
                 />
               </AreaChart>
             </ResponsiveContainer>

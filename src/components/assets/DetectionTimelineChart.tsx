@@ -23,14 +23,14 @@ interface DetectionTimelineChartProps {
 const DetectionTimelineChart = ({ detectionData, timeframe, colors }: DetectionTimelineChartProps) => {
   return (
     <Card className="h-full">
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center">
           <Globe className="h-5 w-5 mr-2" />
           Detection Timeline
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[250px] w-full">
+      <CardContent className="pt-0">
+        <div className="h-[320px] w-full">
           <ChartContainer
             config={{
               detected: { color: colors.detected },
@@ -39,7 +39,7 @@ const DetectionTimelineChart = ({ detectionData, timeframe, colors }: DetectionT
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={detectionData} margin={{ top: 5, right: 5, left: 0, bottom: 5 }}>
+              <LineChart data={detectionData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                 <XAxis 
                   dataKey="name" 
                   fontSize={12}

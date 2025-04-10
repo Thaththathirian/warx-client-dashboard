@@ -44,25 +44,25 @@ const TorrentClientChart = () => {
 
   return (
     <Card className="h-full">
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center">
           <PieIcon className="h-5 w-5 mr-2" />
           Client Distribution
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[250px] w-full">
+      <CardContent className="pt-0">
+        <div className="h-[320px] w-full">
           <ChartContainer
             config={{}}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+              <PieChart margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  outerRadius={80}
+                  outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
                   nameKey="name"
@@ -73,7 +73,7 @@ const TorrentClientChart = () => {
                   ))}
                 </Pie>
                 <Tooltip content={<ChartTooltipContent nameKey="name" labelKey="value" />} />
-                <Legend />
+                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
               </PieChart>
             </ResponsiveContainer>
           </ChartContainer>

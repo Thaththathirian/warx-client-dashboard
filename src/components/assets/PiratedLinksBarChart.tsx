@@ -9,7 +9,8 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis
+  YAxis,
+  Legend
 } from 'recharts';
 import { BarChart as BarChartIcon } from 'lucide-react';
 import { useAssetStore } from '@/store/assetStore';
@@ -71,14 +72,14 @@ const PiratedLinksBarChart = () => {
   
   return (
     <Card className="h-full">
-      <CardHeader>
+      <CardHeader className="pb-3">
         <CardTitle className="flex items-center">
           <BarChartIcon className="h-5 w-5 mr-2" />
           Top Pirated Platforms
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[250px] w-full">
+      <CardContent className="pt-0">
+        <div className="h-[320px] w-full">
           <ChartContainer 
             config={{
               detected: { color: "#0088FE" },
@@ -89,7 +90,7 @@ const PiratedLinksBarChart = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
-                margin={{ top: 5, right: 5, left: 5, bottom: 20 }}
+                margin={{ top: 5, right: 5, left: 5, bottom: 60 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis 
@@ -102,6 +103,7 @@ const PiratedLinksBarChart = () => {
                 />
                 <YAxis fontSize={12} />
                 <Tooltip content={<ChartTooltipContent />} />
+                <Legend />
                 <Bar dataKey="detected" name="Detected" stackId="a" fill="#0088FE" />
                 <Bar dataKey="enforced" name="Enforced" stackId="a" fill="#00C49F" />
                 <Bar dataKey="removed" name="Removed" stackId="a" fill="#FF8042" />
