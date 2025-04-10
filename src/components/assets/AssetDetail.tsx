@@ -4,7 +4,7 @@ import { useAssetStore, Asset } from '@/store/assetStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatCard from '@/components/dashboard/StatCard';
-import { Activity, Users, Network, Database, ArrowLeft } from 'lucide-react';
+import { Activity, Users, Network, Database } from 'lucide-react';
 import { Shield, Check } from './icons/CustomIcons';
 import AssetMap from './AssetMap';
 import PiratedLinksTable from './PiratedLinksTable';
@@ -158,7 +158,7 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
   const countryData = getCountryData();
   const ispData = getIspData();
   const torrentActivityData = getTorrentActivityData();
-  const hasTorrentData = !!assetDetail.torrent;
+  const hasTorrentData = !!assetDetail.torrent && Object.keys(assetDetail.torrent).length > 0;
 
   return (
     <div className="space-y-6">
@@ -249,19 +249,19 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <StatCard
                   title="Total Peers"
-                  value={assetDetail.torrent?.stats.peer_count.toString() || "0"}
+                  value={(assetDetail.torrent?.stats?.peer_count || 0).toString()}
                   icon={<Users className="h-4 w-4" />}
                   delay={0}
                 />
                 <StatCard
                   title="Unique IPs"
-                  value={assetDetail.torrent?.stats.unique_ip_count.toString() || "0"}
+                  value={(assetDetail.torrent?.stats?.unique_ip_count || 0).toString()}
                   icon={<Network className="h-4 w-4" />}
                   delay={1}
                 />
                 <StatCard
                   title="Torrent Count"
-                  value={assetDetail.torrent?.stats.torrent_count.toString() || "0"}
+                  value={(assetDetail.torrent?.stats?.torrent_count || 0).toString()}
                   icon={<Database className="h-4 w-4" />}
                   delay={2}
                 />

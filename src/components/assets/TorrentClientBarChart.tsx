@@ -17,7 +17,23 @@ import { useAssetStore } from '@/store/assetStore';
 const TorrentClientBarChart = () => {
   const { assetDetail } = useAssetStore();
 
-  if (!assetDetail?.torrent?.client_stats) return null;
+  if (!assetDetail?.torrent?.client_stats || assetDetail.torrent.client_stats.length === 0) {
+    return (
+      <Card className="h-full">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Database className="h-5 w-5 mr-2" />
+            Torrent Client Distribution
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="flex justify-center items-center h-[320px]">
+            <p className="text-muted-foreground">No client data available</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   // Sort clients by count and limit to top 8
   const clientData = [...assetDetail.torrent.client_stats]

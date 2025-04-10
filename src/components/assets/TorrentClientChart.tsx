@@ -28,7 +28,7 @@ const TorrentClientChart = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-center items-center p-6">
+          <div className="flex justify-center items-center p-6 h-[320px]">
             <p className="text-muted-foreground">No client data available</p>
           </div>
         </CardContent>

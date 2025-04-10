@@ -48,7 +48,7 @@ const AssetMap = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!assetDetail?.torrent?.latest_peers) {
+  if (!assetDetail?.torrent?.latest_peers || assetDetail?.torrent?.latest_peers.length === 0) {
     return (
       <Card>
         <CardHeader>
