@@ -23,6 +23,7 @@ import { AssetHeader } from './AssetHeader';
 import PiratedLinksBarChart from './PiratedLinksBarChart';
 import TorrentClientBarChart from './TorrentClientBarChart';
 import PiratedLinksComparisonChart from './PiratedLinksComparisonChart';
+import PiratedLinksPieCharts from './PiratedLinksPieCharts';
 
 interface AssetDetailProps {
   asset: Asset;
@@ -282,6 +283,8 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
         </TabsContent>
 
         <TabsContent value="links" className="space-y-6 mt-6">
+          <PiratedLinksPieCharts />
+          
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
             <PiratedLinksBarChart />
             <DetectionTimelineChart 
