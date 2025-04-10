@@ -4,7 +4,7 @@ import { useAssetStore, Asset } from '@/store/assetStore';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatCard from '@/components/dashboard/StatCard';
-import { Activity, Users, Network, Database } from 'lucide-react';
+import { Activity, Users, Network, Database, ArrowLeft } from 'lucide-react';
 import { Shield, Check } from './icons/CustomIcons';
 import AssetMap from './AssetMap';
 import PiratedLinksTable from './PiratedLinksTable';
@@ -25,6 +25,7 @@ import TorrentClientBarChart from './TorrentClientBarChart';
 
 interface AssetDetailProps {
   asset: Asset;
+  onBack: () => void;
 }
 
 const COLORS = {
@@ -33,7 +34,7 @@ const COLORS = {
   removed: '#FF8042',
 };
 
-export function AssetDetail({ asset }: AssetDetailProps) {
+export function AssetDetail({ asset, onBack }: AssetDetailProps) {
   const { assetDetail, isLoadingDetail } = useAssetStore();
   const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [activeTab, setActiveTab] = useState<'overview' | 'torrents' | 'links'>('overview');
@@ -133,7 +134,7 @@ export function AssetDetail({ asset }: AssetDetailProps) {
   };
 
   if (isLoadingDetail) {
-    return <AssetDetailSkeleton />;
+    return <AssetDetailSkeleton onBack={onBack} />;
   }
 
   if (!assetDetail) {
@@ -162,7 +163,8 @@ export function AssetDetail({ asset }: AssetDetailProps) {
       <AssetHeader 
         asset={asset} 
         assetDetail={assetDetail} 
-        calculateProgress={calculateProgress} 
+        calculateProgress={calculateProgress}
+        onBack={onBack}
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

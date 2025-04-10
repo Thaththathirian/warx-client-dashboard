@@ -43,21 +43,11 @@ const AssetDetailPage = () => {
   return (
     <DashboardLayout>
       <div className="container mx-auto p-4">
-        <div className="mb-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            className="flex items-center mb-4"
-          >
-            <ArrowLeft className="mr-1 h-4 w-4" />
-            Back to all assets
-          </Button>
-          <h1 className="text-2xl font-bold">Asset Details</h1>
-        </div>
-        
         {selectedAsset ? (
-          <AssetDetailComponent asset={selectedAsset} />
+          <AssetDetailComponent 
+            asset={selectedAsset} 
+            onBack={handleBack}
+          />
         ) : (
           <div className="text-center py-12">
             <p>Loading asset details...</p>

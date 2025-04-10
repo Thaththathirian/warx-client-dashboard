@@ -4,7 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft } from 'lucide-react';
 
-const AssetDetailSkeleton = ({ onBack }: { onBack: () => void }) => {
+interface AssetDetailSkeletonProps {
+  onBack: () => void;
+}
+
+const AssetDetailSkeleton = ({ onBack }: AssetDetailSkeletonProps) => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
