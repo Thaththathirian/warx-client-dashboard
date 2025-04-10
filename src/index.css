@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -136,4 +135,20 @@
   .card-modern {
     @apply bg-white dark:bg-gray-800 rounded-xl shadow-soft border border-gray-100 dark:border-gray-700 transition-all duration-200 hover:shadow-medium;
   }
+}
+
+/* Map styles for dark mode */
+.map-tiles-dark {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+}
+
+/* Popup style fix for Leaflet */
+.leaflet-popup-content-wrapper {
+  background-color: #1f2937;
+  color: #f3f4f6;
+  border-radius: 0.5rem;
+}
+
+.leaflet-popup-tip {
+  background-color: #1f2937;
 }
