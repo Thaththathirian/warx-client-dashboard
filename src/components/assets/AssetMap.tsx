@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,7 +27,7 @@ L.Marker.prototype.options.icon = DefaultIcon;
 const AssetMap = () => {
   const { assetDetail } = useAssetStore();
   const [isLoading, setIsLoading] = useState(true);
-  const [map, setMap] = useState(null);
+  const mapRef = useRef(null);
 
   // Helper function to create custom icons based on seeder status
   const createCustomIcon = (isSeeder) => {
@@ -92,7 +92,12 @@ const AssetMap = () => {
             style={{ height: '100%', width: '100%', background: '#242731' }}
             zoomControl={false}
             attributionControl={false}
-            whenCreated={setMap}
+            ref={mapRef}
+            whenReady={() => {
+              if (mapRef.current) {
+                setIsLoading(false);
+              }
+            }}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
