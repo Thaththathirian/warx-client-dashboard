@@ -78,6 +78,25 @@ interface IspStats {
   isp: string;
 }
 
+interface GeoLocation {
+  latitude: number;
+  longitude: number;
+}
+
+interface Peer {
+  city: string;
+  client: string;
+  country: string;
+  country_code: string;
+  geo: GeoLocation;
+  ip: string;
+  isp: string;
+  last_seen: string;
+  leecher: boolean;
+  port: number;
+  seeder: boolean;
+}
+
 export interface AssetDetail {
   statistics: {
     daily_stats: DailyStats[];
@@ -107,6 +126,7 @@ export interface AssetDetail {
     client_stats: { client: string; count: number }[];
     country_stats: CountryStats[];
     isp_stats: IspStats[];
+    latest_peers: Peer[];
     project: {
       created_at: string;
       description: string;
@@ -121,6 +141,7 @@ export interface AssetDetail {
       torrent_count: number;
       unique_ip_count: number;
     };
+    success?: boolean;
   };
 }
 
@@ -135,7 +156,7 @@ interface AssetState {
   currentPage: number;
   totalPages: number;
   getAssets: (page?: number, limit?: number) => Promise<void>;
-  selectAsset: (asset: Asset) => void;
+  selectAsset: (asset: Asset | null) => void;
   getAssetDetail: (id: number) => Promise<void>;
 }
 
@@ -182,10 +203,12 @@ export const useAssetStore = create<AssetState>()(
       }
     },
 
-    selectAsset: (asset: Asset) => {
+    selectAsset: (asset: Asset | null) => {
       set({ selectedAsset: asset });
       if (asset) {
         get().getAssetDetail(asset.id);
+      } else {
+        set({ assetDetail: null });
       }
     },
 
@@ -197,8 +220,15 @@ export const useAssetStore = create<AssetState>()(
         });
         
         if (response.status === 200) {
+          const detailData = response.data;
+          
+          // Handle case where torrent data might be missing
+          if (!detailData.torrent) {
+            console.log("No torrent data available for this asset");
+          }
+          
           set({
-            assetDetail: response.data,
+            assetDetail: detailData,
             isLoadingDetail: false
           });
         } else {
