@@ -11,33 +11,39 @@ import Reports from "./pages/Reports";
 import Assets from "./pages/Assets";
 import NotFound from "./pages/NotFound";
 import { SidebarProvider } from "@/hooks/use-sidebar";
+import React from 'react';
 
+// Create the query client outside of the component
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <SidebarProvider>
-        <div className="min-h-screen bg-background w-full">
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/dashboard/:page" element={<Dashboard />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/assets" element={<Assets />} />
-              <Route path="/assets/:id" element={<Assets />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </div>
-      </SidebarProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <TooltipProvider>
+            <SidebarProvider>
+              <div className="min-h-screen bg-background w-full">
+                <Toaster />
+                <Sonner />
+                <Routes>
+                  <Route path="/" element={<Navigate to="/login" replace />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard/:page" element={<Dashboard />} />
+                  <Route path="/users" element={<Users />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/assets" element={<Assets />} />
+                  <Route path="/assets/:id" element={<Assets />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </div>
+            </SidebarProvider>
+          </TooltipProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;
