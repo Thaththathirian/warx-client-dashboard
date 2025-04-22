@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permanent Circle Highlight</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .image-map-container {
+            position: relative;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        #main-image {
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            z-index: 1;
+            position: relative;
+        }
+        #circle-highlight {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 215, 0, 0.7);
+            border: 3px solid rgba(255, 165, 0, 0.9);
+            transition: all 0.3s;
+            z-index: 2;
+            transform: translate(-50%, -50%);
+            opacity: 1;
+            cursor: pointer; /* Show pointer cursor on hover */
+        }
+        #circle-form {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            width: 60px;
+        }
+        input {
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Permanent Circle Highlight</h1>
+    
+    <div class="image-map-container">
+        <!-- Main image -->
+        <img id="main-image" src="./page-1.png" alt="Interactive image">
+        
+        <!-- Circle highlight - Permanently visible and clickable -->
+        <div id="circle-highlight" style="width: 80px; height: 80px; top: 150px; left: 250px;" onclick="openCircleLink()"></div>
+    </div>
+    
+    <div id="circle-form">
+        <h3>Circle Configuration</h3>
+        <div class="form-group">
+            <label for="circle-x">X:</label>
+            <input type="number" id="circle-x" value="250">
+        </div>
+        <div class="form-group">
+            <label for="circle-y">Y:</label>
+            <input type="number" id="circle-y" value="150">
+        </div>
+        <div class="form-group">
+            <label for="circle-radius">Radius:</label>
+            <input type="number" id="circle-radius" value="40">
+        </div>
+        <div class="form-group">
+            <label for="circle-link">Link:</label>
+            <input type="url" id="circle-link" value="https://www.example.com" style="width: 250px;">
+        </div>
+        <button onclick="updateCircle()">Update Circle</button>
+    </div>
+
+    <script>
+        const image = document.getElementById('main-image');
+        const circle = document.getElementById('circle-highlight');
+        let circleLink = "https://www.example.com";
+        let naturalWidth, naturalHeight;
+        
+        // Wait for image to load
+        image.onload = function() {
+            naturalWidth = image.naturalWidth;
+            naturalHeight = image.naturalHeight;
+            console.log('Image loaded. Natural size:', naturalWidth, 'x', naturalHeight);
+            
+            // Initialize circle position
+            updateCirclePosition();
+        };
+        
+        function updateCirclePosition() {
+            const x = parseInt(document.getElementById('circle-x').value);
+            const y = parseInt(document.getElementById('circle-y').value);
+            const radius = parseInt(document.getElementById('circle-radius').value);
+            positionCircle(x, y, radius);
+        }
+        
+        function positionCircle(x, y, radius) {
+            if (!image.complete) return;
+            
+            const currentWidth = image.offsetWidth;
+            const currentHeight = image.offsetHeight;
+            const widthRatio = currentWidth / (naturalWidth || image.naturalWidth);
+            const heightRatio = currentHeight / (naturalHeight || image.naturalHeight);
+            
+            const scaledX = x * widthRatio;
+            const scaledY = y * heightRatio;
+            const scaledRadius = radius * Math.min(widthRatio, heightRatio);
+            
+            circle.style.width = scaledRadius * 2 + 'px';
+            circle.style.height = scaledRadius * 2 + 'px';
+            circle.style.left = scaledX + 'px';
+            circle.style.top = scaledY + 'px';
+        }
+        
+        function updateCircle() {
+            // Update circle position
+            updateCirclePosition();
+            
+            // Update circle link
+            circleLink = document.getElementById('circle-link').value;
+        }
+        
+        function openCircleLink() {
+            window.open(circleLink, '_blank');
+        }
+        
+        // Handle window resizing
+        window.addEventListener('resize', function() {
+            updateCirclePosition();
+        });
+        
+        // Initialize with form values
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('circle-x').value = 360;
+            document.getElementById('circle-y').value = 1205;
+            document.getElementById('circle-radius').value = 20;
+            document.getElementById('circle-link').value = circleLink;
+        });
+    </script>
+</body>
+</html>

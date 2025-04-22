@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Globe } from 'lucide-react';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Globe } from "lucide-react";
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import {
   CartesianGrid,
   Legend,
@@ -11,16 +10,20 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis
-} from 'recharts';
+  YAxis,
+} from "recharts";
 
 interface DetectionTimelineChartProps {
   detectionData: any[];
-  timeframe: 'daily' | 'weekly' | 'monthly';
+  timeframe: "daily" | "weekly" | "monthly";
   colors: Record<string, string>;
 }
 
-const DetectionTimelineChart = ({ detectionData, timeframe, colors }: DetectionTimelineChartProps) => {
+const DetectionTimelineChart = ({
+  detectionData,
+  timeframe,
+  colors,
+}: DetectionTimelineChartProps) => {
   return (
     <Card className="h-full">
       <CardHeader className="pb-3">
@@ -39,16 +42,25 @@ const DetectionTimelineChart = ({ detectionData, timeframe, colors }: DetectionT
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={detectionData} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                <XAxis 
-                  dataKey="name" 
+              <LineChart
+                data={detectionData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }} // Increased margins
+              >
+                <XAxis
+                  dataKey="name"
                   fontSize={12}
                   tickMargin={10}
                   tickFormatter={(value) => {
-                    if (timeframe === 'daily') {
-                      return new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                    } else if (timeframe === 'monthly') {
-                      return new Date(value + '-01').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                    if (timeframe === "daily") {
+                      return new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      });
+                    } else if (timeframe === "monthly") {
+                      return new Date(value + "-01").toLocaleDateString(
+                        "en-US",
+                        { month: "short", year: "2-digit" }
+                      );
                     }
                     return value;
                   }}
@@ -56,28 +68,28 @@ const DetectionTimelineChart = ({ detectionData, timeframe, colors }: DetectionT
                 <YAxis fontSize={12} />
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <Tooltip content={<ChartTooltipContent />} />
-                <Line 
-                  type="monotone" 
-                  dataKey="detected" 
-                  stroke={colors.detected} 
+                <Line
+                  type="monotone"
+                  dataKey="detected"
+                  stroke={colors.detected}
                   strokeWidth={2}
                   name="Detected"
                   dot={{ r: 3 }}
                   activeDot={{ r: 5 }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="enforced" 
-                  stroke={colors.enforced} 
+                <Line
+                  type="monotone"
+                  dataKey="enforced"
+                  stroke={colors.enforced}
                   strokeWidth={2}
                   name="Enforced"
                   dot={{ r: 3 }}
                   activeDot={{ r: 5 }}
                 />
-                <Line 
-                  type="monotone" 
-                  dataKey="removed" 
-                  stroke={colors.removed} 
+                <Line
+                  type="monotone"
+                  dataKey="removed"
+                  stroke={colors.removed}
                   strokeWidth={2}
                   name="Removed"
                   dot={{ r: 3 }}

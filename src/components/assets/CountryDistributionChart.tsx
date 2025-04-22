@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Globe } from 'lucide-react';
@@ -38,7 +37,7 @@ const CountryDistributionChart = ({ countryData }: CountryDistributionChartProps
       </CardHeader>
       <CardContent>
         <div className="h-[250px] w-full">
-          <ChartContainer 
+          <ChartContainer
             config={{
               total: { color: "#3b82f6" },
               seeders: { color: "#22c55e" },
@@ -53,9 +52,9 @@ const CountryDistributionChart = ({ countryData }: CountryDistributionChartProps
               >
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
                 <XAxis type="number" fontSize={12} />
-                <YAxis 
-                  dataKey="name" 
-                  type="category" 
+                <YAxis
+                  dataKey="name"
+                  type="category"
                   fontSize={12}
                   width={75}
                   tickFormatter={(value) => value.length > 10 ? `${value.substring(0, 10)}...` : value}

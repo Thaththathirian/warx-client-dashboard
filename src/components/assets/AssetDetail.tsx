@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useAssetStore, Asset } from '@/store/assetStore';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,7 +16,7 @@ import DetectionTimelineChart from './DetectionTimelineChart';
 import PlatformDistributionChart from './PlatformDistributionChart';
 import AssetPreview from './AssetPreview';
 import TorrentActivityChart from './TorrentActivityChart';
-import AssetDetailsInfo from './AssetDetailsInfo';
+// import AssetDetailsInfo from './AssetDetailsInfo';
 import AssetDetailSkeleton from './AssetDetailSkeleton';
 import { AssetHeader } from './AssetHeader';
 import PiratedLinksBarChart from './PiratedLinksBarChart';
@@ -37,7 +36,7 @@ const COLORS = {
 };
 
 export function AssetDetail({ asset, onBack }: AssetDetailProps) {
-  const { assetDetail, isLoadingDetail } = useAssetStore();
+  const { assetDetail, isLoadingDetail } = useAssetStore();   
   const [timeframe, setTimeframe] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [activeTab, setActiveTab] = useState<'overview' | 'torrents' | 'links'>('overview');
 
@@ -92,7 +91,7 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
       .slice(0, 10) // Top 10 countries
       .map(item => ({
         name: item.country,
-        total: item.total,
+        total: item.total, 
         seeders: item.seeders,
         leechers: item.leechers,
         country_code: item.country_code,
@@ -164,7 +163,7 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
     <div className="space-y-6">
       <AssetHeader 
         asset={asset} 
-        assetDetail={assetDetail} 
+        assetDetail={assetDetail}
         calculateProgress={calculateProgress}
         onBack={onBack}
       />
@@ -198,41 +197,53 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6 mt-6">
+          <DetectionActivityChart 
+            timeframe={timeframe} 
+            setTimeframe={setTimeframe} 
+            detectionData={detectionData} 
+            colors={COLORS} 
+          />
+          
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              <DetectionActivityChart 
-                timeframe={timeframe} 
-                setTimeframe={setTimeframe} 
-                detectionData={detectionData} 
-                colors={COLORS} 
-              />
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {hasTorrentData && (
-                  <CountryDistributionChart countryData={countryData} />
-                )}
-                <PiratedLinksBarChart />
+            <div className="lg:col-span-2">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  <PiratedLinksBarChart />
+                </div>
+                {/* <div className="lg:col-span-1">
+                  <AssetDetailsInfo asset={assetDetail.asset} />
+                </div> */}
               </div>
             </div>
             
-            <div className="space-y-6">
+            <div className="lg:col-span-1">
               <AssetPreview 
                 imageSrc={assetDetail.asset.image} 
                 assetName={assetDetail.asset.name} 
               />
-              
-              <PlatformDistributionChart platformData={platformData} />
-              
-              {hasTorrentData && (
-                <TorrentActivityChart 
-                  torrentActivityData={torrentActivityData} 
-                  stats={assetDetail.torrent.stats} 
-                />
-              )}
-              
-              <AssetDetailsInfo asset={assetDetail.asset} />
             </div>
           </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              {hasTorrentData && (
+                <CountryDistributionChart countryData={countryData} />
+              )}
+            </div>
+            
+            <div className="lg:col-span-1">
+              <PlatformDistributionChart platformData={platformData} />
+            </div>
+          </div>
+          
+          {hasTorrentData && (
+            <div className="grid grid-cols-1">
+              <TorrentActivityChart 
+                torrentActivityData={torrentActivityData} 
+                stats={assetDetail.torrent.stats} 
+              />
+            </div>
+          )}
         </TabsContent>
 
         <TabsContent value="torrents" className="space-y-6 mt-6">
@@ -286,7 +297,14 @@ export function AssetDetail({ asset, onBack }: AssetDetailProps) {
           <PiratedLinksPieCharts />
           
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-            <PiratedLinksBarChart />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <PiratedLinksBarChart />
+              </div>
+              {/* <div className="lg:col-span-1">
+                <AssetDetailsInfo asset={assetDetail.asset} />
+              </div> */}
+            </div>
             <DetectionTimelineChart 
               detectionData={detectionData} 
               timeframe={timeframe} 

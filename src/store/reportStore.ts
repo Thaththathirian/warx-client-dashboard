@@ -27,7 +27,7 @@ interface ReportState {
   addReport: (link: string) => Promise<boolean>;
 }
 
-const API_BASE_URL = 'https://antipiracy.whyxpose.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useReportStore = create<ReportState>()(
   devtools((set, get) => ({

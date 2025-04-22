@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Image } from 'lucide-react';
@@ -10,7 +9,7 @@ interface AssetPreviewProps {
 
 const AssetPreview = ({ imageSrc, assetName }: AssetPreviewProps) => {
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader className="pb-2">
         <div className="flex items-center">
           <Image className="mr-2 h-5 w-5" />
@@ -24,6 +23,7 @@ const AssetPreview = ({ imageSrc, assetName }: AssetPreviewProps) => {
               src={imageSrc} 
               alt={assetName}
               className="w-full h-full object-cover" 
+              loading="lazy"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">

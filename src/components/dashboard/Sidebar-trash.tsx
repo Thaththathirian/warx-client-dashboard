@@ -41,7 +41,7 @@ const Sidebar = ({ isOpen, toggleSidebar }: SidebarProps) => {
   const navItems = [
     { name: 'Dashboard', icon: <FiGrid className="h-5 w-5" />, path: '/dashboard' },
     { name: 'Users', icon: <FiUsers className="h-5 w-5" />, path: '/users' },
-    { name: 'Content Protection', icon: <FiShield className="h-5 w-5" />, path: '/protection' },
+    // { name: 'Content Protection', icon: <FiShield className="h-5 w-5" />, path: '/protection' },
   ];
 
   return (

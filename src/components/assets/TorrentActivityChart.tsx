@@ -1,8 +1,7 @@
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Network } from 'lucide-react';
-import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Network } from "lucide-react";
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 import {
   CartesianGrid,
   Line,
@@ -10,8 +9,8 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis
-} from 'recharts';
+  YAxis,
+} from "recharts";
 
 interface TorrentActivityChartProps {
   torrentActivityData: Array<{
@@ -19,12 +18,15 @@ interface TorrentActivityChartProps {
     uniqueIPs: number;
   }>;
   stats: {
-    seeder_count: number;
+    seeder_count: string | number;
     leecher_count: number;
   };
 }
 
-const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityChartProps) => {
+const TorrentActivityChart = ({
+  torrentActivityData,
+  stats,
+}: TorrentActivityChartProps) => {
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
@@ -46,18 +48,25 @@ const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityCha
                 margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   fontSize={12}
-                  tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  tickFormatter={(value) =>
+                    new Date(value).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })
+                  }
                 />
                 <YAxis fontSize={12} />
-                <Tooltip content={<ChartTooltipContent labelKey="uniqueIPs" />} />
-                <Line 
-                  type="monotone" 
+                <Tooltip
+                  content={<ChartTooltipContent labelKey="uniqueIPs" />}
+                />
+                <Line
+                  type="monotone"
                   dataKey="uniqueIPs"
-                  name="Unique IPs" 
-                  stroke="#8b5cf6" 
+                  name="Unique IPs"
+                  stroke="#8b5cf6"
                   strokeWidth={2}
                   dot={{ r: 3 }}
                   activeDot={{ r: 5 }}
@@ -68,11 +77,15 @@ const TorrentActivityChart = ({ torrentActivityData, stats }: TorrentActivityCha
         </div>
         <div className="grid grid-cols-2 gap-4 mt-2">
           <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Seeders</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+              Seeders
+            </div>
             <div className="text-lg font-bold">{stats.seeder_count || 0}</div>
           </div>
           <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Leechers</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+              Leechers
+            </div>
             <div className="text-lg font-bold">{stats.leecher_count || 0}</div>
           </div>
         </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
@@ -71,15 +70,15 @@ const PiratedLinksBarChart = () => {
     .slice(0, 5); // Top 5 platforms
   
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center">
           <BarChartIcon className="h-5 w-5 mr-2" />
           Top Pirated Platforms
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="h-[320px] w-full">
+      <CardContent className="pt-0 flex-grow">
+        <div className="h-full w-full">
           <ChartContainer 
             config={{
               detected: { color: "#0088FE" },
@@ -90,20 +89,32 @@ const PiratedLinksBarChart = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}
-                margin={{ top: 5, right: 5, left: 5, bottom: 60 }}
+                margin={{ top: 5, right: 20, left: 10, bottom: 20 }}
+                layout="vertical"
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis 
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                <XAxis type="number" fontSize={12} />
+                <YAxis 
                   dataKey="name" 
+                  type="category"
+                  width={120}
                   fontSize={12}
-                  angle={-45} 
-                  textAnchor="end"
-                  height={60}
-                  tickFormatter={(value) => value.length > 12 ? `${value.substring(0, 12)}...` : value}
+                  tickFormatter={(value) => value.length > 15 ? `${value.substring(0, 15)}...` : value}
                 />
-                <YAxis fontSize={12} />
-                <Tooltip content={<ChartTooltipContent />} />
-                <Legend />
+                <Tooltip 
+                  content={<ChartTooltipContent />} 
+                  cursor={{ fill: 'rgba(0, 0, 0, 0.05)' }}
+                  wrapperStyle={{ 
+                    opacity: 0.9, 
+                    pointerEvents: 'none',
+                    zIndex: 100,
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderRadius: '4px',
+                    padding: '4px',
+                    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)'
+                  }}
+                />
+                <Legend verticalAlign="bottom" />
                 <Bar dataKey="detected" name="Detected" stackId="a" fill="#0088FE" />
                 <Bar dataKey="enforced" name="Enforced" stackId="a" fill="#00C49F" />
                 <Bar dataKey="removed" name="Removed" stackId="a" fill="#FF8042" />

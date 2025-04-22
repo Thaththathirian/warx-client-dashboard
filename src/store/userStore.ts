@@ -52,7 +52,7 @@ interface UsersState {
   setCurrentPage: (page: number) => void;
 }
 
-const API_BASE_URL = 'https://antipiracy.whyxpose.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useUsersStore = create<UsersState>()(
   devtools((set, get) => ({
